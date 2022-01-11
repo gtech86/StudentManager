@@ -3,10 +3,12 @@ package pl.grabowski.studentmanager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import pl.grabowski.studentmanager.model.Student;
+import pl.grabowski.studentmanager.repository.StudentRepository;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -30,7 +32,7 @@ class StudentIntegrationTest {
     @Test
     void ShouldReturnAllStudent(){
         // when
-        var result = restTemplate.getForEntity("http://localhost:" + port + "/students/all", Student[].class);
+        var result = restTemplate.getForEntity("http://localhost:" + port + "/students", Student[].class);
 
         // then
         assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();

@@ -18,7 +18,7 @@ public class StudentAddressController {
 
     private final StudentAddressService studentAddressService;
 
-    @PostMapping(path = "/{id}/address", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/{id}/address")
     public void addNewAddress(@PathVariable Long studentId, @RequestBody StudentAddress studentAddress){
 
     }
