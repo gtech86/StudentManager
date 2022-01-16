@@ -11,8 +11,6 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "student")
-@Getter
-@Setter
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +29,54 @@ public class Student {
         this.lastName = lastName;
         this.indexNumber = indexNumber;
         this.birthDay = birthDay;
+        this.studentAddress = studentAddress;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Integer getIndexNumber() {
+        return indexNumber;
+    }
+
+    public void setIndexNumber(Integer indexNumber) {
+        this.indexNumber = indexNumber;
+    }
+
+    public Date getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(Date birthDay) {
+        this.birthDay = birthDay;
+    }
+
+    public StudentAddress getStudentAddress() {
+        return studentAddress;
+    }
+
+    public void setStudentAddress(StudentAddress studentAddress) {
         this.studentAddress = studentAddress;
     }
 

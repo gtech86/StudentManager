@@ -22,7 +22,7 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping(path="/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<List<Student>> getAllStudent(){
         List<Student> students = studentService.getAllStudents();
         return new ResponseEntity<>(students, HttpStatus.OK);
@@ -34,6 +34,18 @@ public class StudentController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Student> addNewStudent(@RequestBody Student student){
+        studentService.addNewStudent(student);
+
+        try{
+            studentService.addNewStudent(student);
+            return new ResponseEntity<>(student, HttpStatus.CREATED);
+        }
+        catch(IllegalArgumentException e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 
     @DeleteMapping(path="/{id}")
     public ResponseEntity<String> deleteStudentById(@PathVariable(required = true) Long id){
@@ -41,14 +53,10 @@ public class StudentController {
             studentService.deleteStudentById(id);
             return new ResponseEntity<>("Student deleted", HttpStatus.OK);
         }
-        catch(EmptyResultDataAccessException e){
+        catch(IllegalArgumentException e){
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping(path="/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addNewStudent(@RequestBody Student student){
-        studentService.addNewStudent(student);
-    }
 
 }
