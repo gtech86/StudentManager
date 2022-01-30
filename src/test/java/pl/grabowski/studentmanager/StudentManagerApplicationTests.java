@@ -1,7 +1,5 @@
 package pl.grabowski.studentmanager;
 
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,8 +19,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-
-
 class StudentIntegrationTest {
 
     @LocalServerPort
@@ -40,9 +36,9 @@ class StudentIntegrationTest {
         return "http://localhost:"+port+"/students";
     }
 
-    private void initData(){
-        testStudents.add(new Student(1L,"John","Bond",4567, Date.valueOf(LocalDate.now()),null));
-        testStudents.add(new Student(2L, "Paweł","Grabowski",1234, Date.valueOf(LocalDate.now()),null));
+    /*private void initData(){
+        testStudents.add(new Student(1L,"John","Bond", mail, 4567, Date.valueOf(LocalDate.now()),null));
+        testStudents.add(new Student(2L, "Paweł","Grabowski", mail, 1234, Date.valueOf(LocalDate.now()),null));
         studentRepository.saveAll(testStudents);
     }
 
@@ -62,15 +58,15 @@ class StudentIntegrationTest {
         assertThat(result.hasBody()).isTrue();
 
         assertThat(result.getBody()).containsExactly(
-                new Student(1L,"John","Bond",4567, Date.valueOf(LocalDate.now()),null),
-                new Student(2L, "Paweł","Grabowski",1234, Date.valueOf(LocalDate.now()),null));
+                new Student(1L,"John","Bond", mail, 4567, Date.valueOf(LocalDate.now()),null),
+                new Student(2L, "Paweł","Grabowski", mail, 1234, Date.valueOf(LocalDate.now()),null));
     }
 
     @Test
     void ShouldAbleToAddNewStudent(){
         //when
         var result = restTemplate.postForEntity(StudentResourceUrl(),
-                new Student(1L,"John","Bond",4567, Date.valueOf(LocalDate.now()),null),
+                new Student(1L,"John","Bond", mail, 4567, Date.valueOf(LocalDate.now()),null),
                 Student.class);
 
         //then
@@ -90,7 +86,7 @@ class StudentIntegrationTest {
         assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(result.hasBody()).isTrue();
         assertThat(result.getBody()).isEqualTo(
-                new Student(2L, "Paweł","Grabowski",1234, Date.valueOf(LocalDate.now()),null)
+                new Student(2L, "Paweł","Grabowski", mail, 1234, Date.valueOf(LocalDate.now()),null)
         );
     }
 
@@ -106,5 +102,25 @@ class StudentIntegrationTest {
         assertThat(result.getStatusCode().is4xxClientError()).isTrue();
     }
 
+    @Test
+    void ShouldAbleToUpdateStudent(){
+        //given
+        initData();
+        var updateResult = restTemplate.postForEntity("http://localhost:"+port+"/students",
+                new Student(2L, "Poprawiony","Grabowski", mail, 1234, Date.valueOf(LocalDate.now()),null),
+                Student.class
+                );
+        // when
+        var result = restTemplate.getForEntity("http://localhost:"+port+"/students/2", Student.class);
+
+        // then
+        assertThat(updateResult.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(result.hasBody()).isTrue();
+        assertThat(result.getBody()).isEqualTo(
+                new Student(2L, "Poprawiony","Grabowski", mail, 1234, Date.valueOf(LocalDate.now()),null)
+        );
+
+    }
+*/
 
 }

@@ -1,10 +1,5 @@
 package pl.grabowski.studentmanager.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
@@ -17,19 +12,28 @@ public class Student {
     private Long id;
     private String firstName;
     private String lastName;
+    private String mail;
     private Integer indexNumber;
     private Date birthDay;
 
     public Student() {
     }
 
-    public Student(Long id, String firstName, String lastName, Integer indexNumber, Date birthDay, StudentAddress studentAddress) {
+    public Student(Long id, String firstName, String lastName, String mail, Integer indexNumber, Date birthDay) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.mail = mail;
         this.indexNumber = indexNumber;
         this.birthDay = birthDay;
-        this.studentAddress = studentAddress;
+    }
+
+    public Student(String firstName, String lastName, String mail, Integer indexNumber, Date birthDay) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.mail = mail;
+        this.indexNumber = indexNumber;
+        this.birthDay = birthDay;
     }
 
     public Long getId() {
@@ -54,6 +58,14 @@ public class Student {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     public Integer getIndexNumber() {
