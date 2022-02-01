@@ -1,8 +1,8 @@
-package pl.grabowski.studentmanager.service;
+package pl.grabowski.studentmanager.service.student;
 
 import org.springframework.stereotype.Service;
-import pl.grabowski.studentmanager.model.Student;
-import pl.grabowski.studentmanager.repository.StudentRepository;
+import pl.grabowski.studentmanager.model.student.Student;
+import pl.grabowski.studentmanager.repository.student.StudentRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

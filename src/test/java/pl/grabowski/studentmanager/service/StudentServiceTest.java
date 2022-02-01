@@ -1,15 +1,8 @@
 package pl.grabowski.studentmanager.service;
 
-import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import pl.grabowski.studentmanager.model.Student;
-import pl.grabowski.studentmanager.repository.StudentRepository;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
+import pl.grabowski.studentmanager.repository.student.StudentRepository;
+import pl.grabowski.studentmanager.service.student.StudentService;
 
 
 class StudentServiceTest {

@@ -1,12 +1,10 @@
-package pl.grabowski.studentmanager.controller;
+package pl.grabowski.studentmanager.controller.student;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import pl.grabowski.studentmanager.model.StudentAddress;
-import pl.grabowski.studentmanager.service.StudentAddressService;
+import pl.grabowski.studentmanager.model.student.StudentAddress;
+import pl.grabowski.studentmanager.service.student.StudentAddressService;
 
 @RequiredArgsConstructor
 @Controller

@@ -1,16 +1,14 @@
 package pl.grabowski.studentmanager;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import pl.grabowski.studentmanager.model.Student;
-import pl.grabowski.studentmanager.repository.StudentRepository;
-import java.sql.Date;
-import java.time.LocalDate;
+import pl.grabowski.studentmanager.model.student.Student;
+import pl.grabowski.studentmanager.repository.student.StudentRepository;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +33,7 @@ class StudentIntegrationTest {
     private String StudentResourceUrl() {
         return "http://localhost:"+port+"/students";
     }
+
 
     /*private void initData(){
         testStudents.add(new Student(1L,"John","Bond", mail, 4567, Date.valueOf(LocalDate.now()),null));

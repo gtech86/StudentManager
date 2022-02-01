@@ -1,20 +1,29 @@
-package pl.grabowski.studentmanager.model;
+package pl.grabowski.studentmanager.model.student;
+
+import pl.grabowski.studentmanager.model.course.Course;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "student")
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "student_id")
     private Long id;
     private String firstName;
     private String lastName;
     private String mail;
     private Integer indexNumber;
     private Date birthDay;
+
+    @ManyToMany
+    @JoinTable(
+            name = "course_student",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id"))
+    private Set<Course> courses;
 
     public Student() {
     }
@@ -84,13 +93,6 @@ public class Student {
         this.birthDay = birthDay;
     }
 
-    public StudentAddress getStudentAddress() {
-        return studentAddress;
-    }
-
-    public void setStudentAddress(StudentAddress studentAddress) {
-        this.studentAddress = studentAddress;
-    }
 
     @Override
     public String toString() {
@@ -100,27 +102,19 @@ public class Student {
                 ", lastName='" + lastName + '\'' +
                 ", indexNumber=" + indexNumber +
                 ", birthDay=" + birthDay +
-                ", studentAddress=" + studentAddress +
                 '}';
     }
-
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return Objects.equals(id, student.id) && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(indexNumber, student.indexNumber) && Objects.equals(birthDay, student.birthDay) && Objects.equals(studentAddress, student.studentAddress);
+        return Objects.equals(id, student.id) && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(mail, student.mail) && Objects.equals(indexNumber, student.indexNumber) && Objects.equals(birthDay, student.birthDay) && Objects.equals(courses, student.courses);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, indexNumber, birthDay, studentAddress);
+        return Objects.hash(id, firstName, lastName, mail, indexNumber, birthDay, courses);
     }
-
-    @OneToOne
-    @JoinColumn(name = "addressId")
-    private StudentAddress studentAddress;
-
 }

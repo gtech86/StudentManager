@@ -1,11 +1,11 @@
-package pl.grabowski.studentmanager.service;
+package pl.grabowski.studentmanager.service.student;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
-import pl.grabowski.studentmanager.model.StudentAddress;
-import pl.grabowski.studentmanager.repository.StudentAddressRepository;
+import pl.grabowski.studentmanager.model.student.StudentAddress;
+import pl.grabowski.studentmanager.repository.student.StudentAddressRepository;
 import java.util.Optional;
 
 @RequiredArgsConstructor

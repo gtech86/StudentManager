@@ -1,27 +1,32 @@
-package pl.grabowski.studentmanager.controller;
+package pl.grabowski.studentmanager.controller.student;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
-public class StudentResponse {
-    private final Long id;
+public class StudentCreateRequest {
+    @NotNull
+    @Size(min=2, max=15)
     private final String firstName;
+    @NotNull
+    @Size(min=2, max=30)
     private final String lastName;
+    @Email
     private final String mail;
+    @NotNull
     private final Integer indexNumber;
+    @NotNull
+    @Past
     private final Date birthDay;
 
-
-    public StudentResponse(Long id, String firstName, String lastName, String mail, Integer indexNumber, Date birthDay) {
-        this.id = id;
+    public StudentCreateRequest(String firstName, String lastName, String mail, Integer indexNumber, Date birthDay) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.mail = mail;
         this.indexNumber = indexNumber;
         this.birthDay = birthDay;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getFirstName() {
@@ -43,4 +48,5 @@ public class StudentResponse {
     public Date getBirthDay() {
         return birthDay;
     }
+
 }

@@ -1,4 +1,4 @@
-package pl.grabowski.studentmanager.controller;
+package pl.grabowski.studentmanager.controller.student;
 
 import java.util.Date;
 import java.util.Optional;

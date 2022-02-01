@@ -1,4 +1,4 @@
-package pl.grabowski.studentmanager.model;
+package pl.grabowski.studentmanager.model.student;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

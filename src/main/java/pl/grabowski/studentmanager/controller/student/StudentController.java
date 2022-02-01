@@ -1,4 +1,4 @@
-package pl.grabowski.studentmanager.controller;
+package pl.grabowski.studentmanager.controller.student;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -7,8 +7,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import pl.grabowski.studentmanager.model.Student;
-import pl.grabowski.studentmanager.service.StudentService;
+import pl.grabowski.studentmanager.model.student.Student;
+import pl.grabowski.studentmanager.service.student.StudentService;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
@@ -73,7 +73,6 @@ public class StudentController {
                 studentCreateRequest.getIndexNumber(),
                 studentCreateRequest.getBirthDay()
                 );
-        studentService.addNewStudent(student);
         try{
             studentService.addNewStudent(student);
             return new ResponseEntity<>(student, HttpStatus.CREATED);
