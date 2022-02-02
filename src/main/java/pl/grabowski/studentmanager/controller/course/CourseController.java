@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import pl.grabowski.studentmanager.model.course.Course;
 import pl.grabowski.studentmanager.service.course.CourseService;
+import pl.grabowski.studentmanager.service.student.StudentService;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -21,10 +22,12 @@ import java.util.stream.Collectors;
 public class CourseController {
     private final ModelMapper modelMapper = new ModelMapper();
     private final CourseService courseService;
+    private final StudentService studentService;
 
 
-    public CourseController(CourseService courseService) {
+    public CourseController(CourseService courseService, StudentService studentService) {
         this.courseService = courseService;
+        this.studentService = studentService;
     }
 
     @GetMapping
@@ -56,6 +59,21 @@ public class CourseController {
         else return ResponseEntity.notFound().build();
     }
 
+    @GetMapping(path="/{courseId}/student")
+    public ResponseEntity<List<CourseStudentResponse>> getStudentByCourseIt(@PathVariable(required = true) Long courseId){
+        List<CourseStudentResponse> courseStudentResponse = courseService.getStudentByCourseId(courseId)
+                .stream()
+                .map(student -> new CourseStudentResponse(
+                        courseId,
+                        student.getId(),
+                        student.getFirstName(),
+                        student.getLastName(),
+                        student.getIndexNumber()
+                ))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(courseStudentResponse, HttpStatus.OK);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Course> addNewCourse(@Valid @RequestBody CourseCreateRequest courseCreateRequest){
         Course course = new Course(
@@ -72,17 +90,19 @@ public class CourseController {
         }
     }
 
+    @PostMapping(name = "/(courseId}/student/{studentId}")
+    public ResponseEntity<Course> addStudent(@PathVariable Long courseId, @PathVariable Long studentId){
+        var course = courseService.getCourseById(courseId);
+        var student = studentService.getStudentById(studentId);
+        if(course.isPresent() && student.isPresent()){
+            courseService.addStudent(courseId, studentId);
+            studentService.assignCourse(studentId, courseId);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @PatchMapping(path= "/{id}")
     public ResponseEntity<Course> updateCourse(@PathVariable(required = true) Long id, @RequestBody CourseUpdateRequest courseUpdateRequest){
-        /*course course = new course(
-                id,
-                courseUpdateRequest.getFirstName().orElse(null),
-                courseUpdateRequest.getLastName().orElse(null),
-                courseUpdateRequest.getMail().orElse(null),
-                courseUpdateRequest.getIndexNumber().orElse(null),
-                courseUpdateRequest.birthDay.orElse(null)
-        );*/
-
         if(courseService.getCourseById(id).isPresent()){
             Course courseToUpdate = modelMapper.map(courseUpdateRequest, Course.class);
             var course = courseService.updateCourse(id, courseToUpdate);

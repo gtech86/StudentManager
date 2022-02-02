@@ -1,8 +1,15 @@
 package pl.grabowski.studentmanager.service.student;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import pl.grabowski.studentmanager.model.course.Course;
 import pl.grabowski.studentmanager.model.student.Student;
 import pl.grabowski.studentmanager.repository.student.StudentRepository;
+import pl.grabowski.studentmanager.service.course.CourseService;
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,9 +19,12 @@ import java.util.stream.StreamSupport;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final CourseService courseService;
 
-    public StudentService(StudentRepository studentRepository) {
+    @Autowired
+    public StudentService(StudentRepository studentRepository,@Lazy CourseService courseService) {
         this.studentRepository = studentRepository;
+        this.courseService = courseService;
     }
 
 
@@ -42,6 +52,23 @@ public class StudentService {
     public void deleteStudentById(Long id) {
         studentRepository.deleteById(id);
     }
+
+    public Optional<Student> assignCourse(Long studentId, Long courseId){
+        var course = courseService.getCourseById(courseId);
+        var student = getStudentById(studentId);
+        student.get().addCourse(course.get());
+        studentRepository.save(student.get());
+        return student;
+    }
+
+    public List<Course> getCourseByStudentId(Long studentId){
+        var student = getStudentById(studentId);
+        if(student.isPresent()){
+            return new ArrayList<>(student.get().getCourses());
+        }
+        return new ArrayList<>();
+    }
+
 
 
 }

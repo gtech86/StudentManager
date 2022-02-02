@@ -7,10 +7,10 @@ import pl.grabowski.studentmanager.service.student.StudentService;
 
 class StudentServiceTest {
     private final StudentRepository studentRepository = Mockito.mock(StudentRepository.class);
+/*
+    private final StudentService studentService = new StudentService(studentRepository, courseService);
 
-    private final StudentService studentService = new StudentService(studentRepository);
-
-    /*@Test
+    @Test
     void ShouldCreateStudent(){
         //given
         Student student = new Student(1L,"Paweł","Grabowski", mail, 1234, Date.valueOf(LocalDate.now()),null);

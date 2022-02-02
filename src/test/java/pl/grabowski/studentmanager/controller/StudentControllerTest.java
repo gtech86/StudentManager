@@ -29,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(StudentController.class)
 @AutoConfigureMockMvc
-
 @ActiveProfiles("test")
 class StudentControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();

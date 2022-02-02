@@ -8,6 +8,7 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import pl.grabowski.studentmanager.model.student.Student;
+import pl.grabowski.studentmanager.service.course.CourseService;
 import pl.grabowski.studentmanager.service.student.StudentService;
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -22,10 +23,12 @@ public class StudentController {
     private final StudentService studentService;
     private final Validator validator;
     private final ModelMapper modelMapper = new ModelMapper();
+    private final CourseService courseService;
 
-    public StudentController(StudentService studentService, Validator validator) {
+    public StudentController(StudentService studentService, Validator validator, CourseService courseService) {
         this.studentService = studentService;
         this.validator = validator;
+        this.courseService = courseService;
     }
 
     @GetMapping
@@ -64,21 +67,49 @@ public class StudentController {
                 else return ResponseEntity.notFound().build();
     }
 
+    @GetMapping(path="/{studentId}/course")
+    public ResponseEntity<List<StudentCourseResponse>> getCourseByStudentId(@PathVariable(required = true) Long studentId){
+        List<StudentCourseResponse> studentsCourseResponse = studentService.getCourseByStudentId(studentId)
+                .stream()
+                .map(course -> new StudentCourseResponse(
+                        studentId,
+                        course.getId(),
+                        course.getName(),
+                        course.getDescription()
+                        )
+                )
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(studentsCourseResponse, HttpStatus.OK);
+    }
+
+    @PostMapping(path="/{studentId}/course/{courseId}")
+    public ResponseEntity<String> assignStudentToCourse(@PathVariable(required = true) Long studentId, @PathVariable(required = true) Long courseId ){
+        var course = courseService.getCourseById(courseId);
+        var student = studentService.getStudentById(studentId);
+        if(student.isPresent() && course.isPresent()) {
+            studentService.assignCourse(studentId, courseId);
+            courseService.addStudent(courseId,studentId);
+            return new ResponseEntity<>("Student added to course", HttpStatus.OK);
+        }
+        else return ResponseEntity.notFound().build();
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Student> addNewStudent(@Valid @RequestBody StudentCreateRequest studentCreateRequest){
-        var student = new Student(
+        Student student = new Student(
                 studentCreateRequest.getFirstName(),
                 studentCreateRequest.getLastName(),
                 studentCreateRequest.getMail(),
                 studentCreateRequest.getIndexNumber(),
                 studentCreateRequest.getBirthDay()
-                );
+        );
         try{
             studentService.addNewStudent(student);
             return new ResponseEntity<>(student, HttpStatus.CREATED);
         }
         catch(IllegalArgumentException e){
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.notFound().build();
         }
     }
 

@@ -45,6 +45,30 @@ public class Student {
         this.birthDay = birthDay;
     }
 
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", indexNumber=" + indexNumber +
+                ", birthDay=" + birthDay +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return Objects.equals(id, student.id) && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(mail, student.mail) && Objects.equals(indexNumber, student.indexNumber) && Objects.equals(birthDay, student.birthDay) && Objects.equals(courses, student.courses);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, mail, indexNumber, birthDay, courses);
+    }
+
     public Long getId() {
         return id;
     }
@@ -93,28 +117,11 @@ public class Student {
         this.birthDay = birthDay;
     }
 
-
-    @Override
-    public String toString() {
-        return "Student{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", indexNumber=" + indexNumber +
-                ", birthDay=" + birthDay +
-                '}';
+    public Set<Course> getCourses() {
+        return courses;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Student student = (Student) o;
-        return Objects.equals(id, student.id) && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(mail, student.mail) && Objects.equals(indexNumber, student.indexNumber) && Objects.equals(birthDay, student.birthDay) && Objects.equals(courses, student.courses);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, firstName, lastName, mail, indexNumber, birthDay, courses);
+    public void addCourse(Course course){
+        courses.add(course);
     }
 }

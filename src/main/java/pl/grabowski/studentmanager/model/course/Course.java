@@ -19,19 +19,6 @@ public class Course {
     @ManyToMany(mappedBy = "courses")
     private Set<Student> students;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Course course = (Course) o;
-        return Objects.equals(id, course.id) && Objects.equals(name, course.name) && Objects.equals(description, course.description);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, description);
-    }
-
     public Course() {
     }
 
@@ -46,6 +33,21 @@ public class Course {
         this.description = description;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course course = (Course) o;
+        return Objects.equals(id, course.id) && Objects.equals(name, course.name) && Objects.equals(description, course.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description);
+    }
+
+
+
     public Long getId() {
         return id;
     }
@@ -56,5 +58,13 @@ public class Course {
 
     public String getDescription() {
         return description;
+    }
+
+    public void addStudent(Student student){
+        students.add(student);
+    }
+
+    public Set<Student> getStudents() {
+        return students;
     }
 }
