@@ -11,17 +11,17 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.grabowski.studentmanager.controller.student.StudentController;
 import pl.grabowski.studentmanager.controller.student.StudentCreateRequest;
+import pl.grabowski.studentmanager.controller.student.StudentUpdateRequest;
 import pl.grabowski.studentmanager.model.student.Student;
+import pl.grabowski.studentmanager.service.course.CourseService;
 import pl.grabowski.studentmanager.service.student.StudentService;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,12 +32,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 class StudentControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
+    Student student = new Student(1L,"Paweł","Grabowski", "pawel@gmail.com", 1234, Date.valueOf(LocalDate.now()));
 
     @Autowired
     MockMvc mvc;
 
     @MockBean
     private StudentService studentService;
+    @MockBean
+    private CourseService courseService;
 
     @Test
     void shouldReturnListOfStudents() throws Exception {
@@ -83,8 +86,6 @@ class StudentControllerTest {
     @Test
     void shouldReturnStudentById() throws Exception{
         //given
-        Student student = new Student(1L,"Paweł","Grabowski", "pawel@gmail.com", 1234, Date.valueOf(LocalDate.now()));
-
         given(studentService.getStudentById(1L)).willReturn(java.util.Optional.of(student));
 
         //then
@@ -98,5 +99,20 @@ class StudentControllerTest {
                 .andExpect(jsonPath("$.mail", is("pawel@gmail.com") ))
                 .andReturn()
                 .getResponse();
+    }
+
+    @Test/////NIE DZIALA
+    void shouldUpdateStudent() throws Exception{
+        //given
+        given(studentService.getStudentById(1L)).willReturn(java.util.Optional.of(student));
+        //then
+        mvc.perform(patch("/students/1")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content("{\"firstName\": \"Marek\"}")
+                )
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.firstName", is("Paweł") ))
+                .andExpect(jsonPath("$.lastName", is("Grabowski") )).andReturn();
+
     }
 }

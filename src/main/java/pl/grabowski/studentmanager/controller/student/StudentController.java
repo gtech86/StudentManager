@@ -124,11 +124,10 @@ public class StudentController {
                 studentUpdateRequest.birthDay.orElse(null)
         );*/
 
-        if(studentService.getStudentById(id).isPresent()){
-            Student studentToUpdate = modelMapper.map(studentUpdateRequest, Student.class);
+       if(studentService.getStudentById(id).isPresent()){
+            var studentToUpdate = modelMapper.map(studentUpdateRequest, Student.class);
             var student = studentService.updateStudent(id, studentToUpdate);
-            return new ResponseEntity<>(student.get(), HttpStatus.CREATED);
-
+            return new ResponseEntity<>(student.get(), HttpStatus.OK);
         }
         return ResponseEntity.notFound().build();
     }
