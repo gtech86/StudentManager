@@ -115,15 +115,6 @@ public class StudentController {
 
     @PatchMapping(path= "/{id}")
     public ResponseEntity<Student> updateStudent(@PathVariable(required = true) Long id, @RequestBody StudentUpdateRequest studentUpdateRequest){
-        /*Student student = new Student(
-                id,
-                studentUpdateRequest.getFirstName().orElse(null),
-                studentUpdateRequest.getLastName().orElse(null),
-                studentUpdateRequest.getMail().orElse(null),
-                studentUpdateRequest.getIndexNumber().orElse(null),
-                studentUpdateRequest.birthDay.orElse(null)
-        );*/
-
        if(studentService.getStudentById(id).isPresent()){
             var studentToUpdate = modelMapper.map(studentUpdateRequest, Student.class);
             var student = studentService.updateStudent(id, studentToUpdate);
