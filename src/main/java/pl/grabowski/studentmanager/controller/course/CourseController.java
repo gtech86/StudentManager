@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,7 @@ public class CourseController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('course:read')")
     public ResponseEntity<List<CourseResponse>> getAllCourses(){
         List<CourseResponse> courseResponse = courseService.getAllCourses()
                 .stream()
@@ -46,6 +48,7 @@ public class CourseController {
     }
 
     @GetMapping(path="/{id}")
+    @PreAuthorize("hasAuthority('course:read')")
     public ResponseEntity<CourseResponse> getCourseById(@PathVariable(required = true) Long id){
 
         var course = courseService.getCourseById(id);
@@ -60,6 +63,7 @@ public class CourseController {
     }
 
     @GetMapping(path="/{courseId}/student")
+    @PreAuthorize("hasAuthority('course:read')")
     public ResponseEntity<List<CourseStudentResponse>> getStudentByCourseIt(@PathVariable(required = true) Long courseId){
         List<CourseStudentResponse> courseStudentResponse = courseService.getStudentByCourseId(courseId)
                 .stream()
@@ -75,6 +79,7 @@ public class CourseController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('course:write')")
     public ResponseEntity<Course> addNewCourse(@Valid @RequestBody CourseCreateRequest courseCreateRequest){
         Course course = new Course(
                 courseCreateRequest.getName(),
@@ -91,6 +96,7 @@ public class CourseController {
     }
 
     @PostMapping(name = "/(courseId}/student/{studentId}")
+    @PreAuthorize("hasAuthority('course:write')")
     public ResponseEntity<Course> addStudent(@PathVariable Long courseId, @PathVariable Long studentId){
         var course = courseService.getCourseById(courseId);
         var student = studentService.getStudentById(studentId);
@@ -102,6 +108,7 @@ public class CourseController {
     }
 
     @PatchMapping(path= "/{id}")
+    @PreAuthorize("hasAuthority('course:write')")
     public ResponseEntity<Course> updateCourse(@PathVariable(required = true) Long id, @RequestBody CourseUpdateRequest courseUpdateRequest){
         if(courseService.getCourseById(id).isPresent()){
             Course courseToUpdate = modelMapper.map(courseUpdateRequest, Course.class);
@@ -113,6 +120,7 @@ public class CourseController {
     }
 
     @DeleteMapping(path="/{id}")
+    @PreAuthorize("hasAuthority('course:write')")
     public ResponseEntity<String> deleteCourseById(@PathVariable(required = true) Long id){
         try{
             courseService.deleteCourseById(id);

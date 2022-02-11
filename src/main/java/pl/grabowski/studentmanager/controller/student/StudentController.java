@@ -3,6 +3,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,6 +34,7 @@ public class StudentController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('student:read')")
     public ResponseEntity<List<StudentResponse>> getAllStudent(){
         List<StudentResponse> studentsResponse = studentService.getAllStudents()
                 .stream()
@@ -50,6 +53,7 @@ public class StudentController {
     }
 
     @GetMapping(path="/{id}")
+    @PreAuthorize("hasAuthority('student:read')")
     public ResponseEntity<StudentResponse> getStudentById(@PathVariable(required = true) Long id){
 
         var student = studentService.getStudentById(id);
@@ -68,6 +72,7 @@ public class StudentController {
     }
 
     @GetMapping(path="/{studentId}/course")
+    @PreAuthorize("hasAuthority('course:read')")
     public ResponseEntity<List<StudentCourseResponse>> getCourseByStudentId(@PathVariable(required = true) Long studentId){
         List<StudentCourseResponse> studentsCourseResponse = studentService.getCourseByStudentId(studentId)
                 .stream()
@@ -84,6 +89,7 @@ public class StudentController {
     }
 
     @PostMapping(path="/{studentId}/course/{courseId}")
+    @PreAuthorize("hasAuthority('student:write')")
     public ResponseEntity<String> assignStudentToCourse(@PathVariable(required = true) Long studentId, @PathVariable(required = true) Long courseId ){
         var course = courseService.getCourseById(courseId);
         var student = studentService.getStudentById(studentId);
@@ -96,6 +102,7 @@ public class StudentController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('student:write')")
     public ResponseEntity<Student> addNewStudent(@Valid @RequestBody StudentCreateRequest studentCreateRequest){
         Student student = new Student(
                 studentCreateRequest.getFirstName(),
@@ -114,6 +121,7 @@ public class StudentController {
     }
 
     @PatchMapping(path= "/{id}")
+    @PreAuthorize("hasAuthority('student:write')")
     public ResponseEntity<Student> updateStudent(@PathVariable(required = true) Long id, @RequestBody StudentUpdateRequest studentUpdateRequest){
        if(studentService.getStudentById(id).isPresent()){
             var studentToUpdate = modelMapper.map(studentUpdateRequest, Student.class);
@@ -124,6 +132,7 @@ public class StudentController {
     }
 
     @DeleteMapping(path="/{id}")
+    @PreAuthorize("hasAuthority('student:write')")
     public ResponseEntity<String> deleteStudentById(@PathVariable(required = true) Long id){
         try{
             studentService.deleteStudentById(id);
