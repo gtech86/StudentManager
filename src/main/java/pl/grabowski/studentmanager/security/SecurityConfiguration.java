@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.*;
 import static pl.grabowski.studentmanager.security.ApplicationUserRole.*;
@@ -26,16 +27,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(final HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .sessionManagement()
-                .sessionCreationPolicy(STATELESS)
+                .sessionManagement().sessionCreationPolicy(STATELESS)
                 .and()
-                .authorizeRequests()
-                .antMatchers("/login")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
+                .authorizeRequests().antMatchers("/login").permitAll()
                 .and()
-                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
+                .authorizeRequests().anyRequest().authenticated()
+                .and()
+                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean()))
+                .addFilterBefore(new JwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
