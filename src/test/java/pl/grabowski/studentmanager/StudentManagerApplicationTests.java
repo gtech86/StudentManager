@@ -1,5 +1,7 @@
 package pl.grabowski.studentmanager;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -52,6 +53,14 @@ class StudentIntegrationTest {
 
     @Test
     void contextLoads() {
+    }
+
+    @Test
+    void ShouldReturnAccessTokenWhenLogin() {
+        String token = "";
+        var result = restTemplate.postForEntity("http://localhost:" + port + "/login?username=admin&password=adminPass", token, String.class);
+        assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(result.getHeaders().toString()).contains("Bearer");
     }
 
     @Test
