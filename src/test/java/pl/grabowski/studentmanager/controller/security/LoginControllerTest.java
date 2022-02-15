@@ -31,4 +31,14 @@ class LoginControllerTest {
                 .andReturn();
     }
 
+    @Test
+    void ShouldReturnUnauthorizedWhenUserDontExist() throws Exception {
+        mvc
+                .perform(post("/login?username=student&password=adminPass")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(MockMvcResultMatchers.header().doesNotExist("Authorization"))
+                .andReturn();
+    }
+
 }

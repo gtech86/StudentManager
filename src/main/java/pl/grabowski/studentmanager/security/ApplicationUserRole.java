@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import static pl.grabowski.studentmanager.security.ApplicationUserPermissions.*;
 
 public enum ApplicationUserRole {
-    USER(new HashSet<>()),
+    USER(new HashSet<>(Arrays.asList(STUDENT_READ, COURSE_READ))),
     ADMIN(new HashSet<>(Arrays.asList(STUDENT_READ, STUDENT_WRITE, COURSE_READ, COURSE_WRITE)));
 
     private final Set<ApplicationUserPermissions> permissions;
