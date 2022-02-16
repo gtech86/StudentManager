@@ -7,12 +7,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.support.incrementer.AbstractDataFieldMaxValueIncrementer;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.grabowski.studentmanager.controller.student.StudentController;
 import pl.grabowski.studentmanager.controller.student.StudentCreateRequest;
 import pl.grabowski.studentmanager.model.course.Course;
 import pl.grabowski.studentmanager.model.student.Student;
+import pl.grabowski.studentmanager.security.ApplicationUserPermissions;
+import pl.grabowski.studentmanager.security.ApplicationUserRole;
 import pl.grabowski.studentmanager.service.course.CourseService;
 import pl.grabowski.studentmanager.service.student.StudentService;
 import java.sql.Date;
@@ -22,10 +27,13 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pl.grabowski.studentmanager.security.ApplicationUserRole.USER;
 
 @WebMvcTest(CourseController.class)
 @AutoConfigureMockMvc
@@ -39,6 +47,7 @@ class CourseControllerTest {
     @MockBean
     private CourseService courseService;
 
+
     @MockBean
     private StudentService studentService;
 
@@ -51,7 +60,8 @@ class CourseControllerTest {
         mvc
                 .perform(post("/course")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content("{\"name\": \"Physics\",\"description\": \"Desc\"}"))
+                        .content("{\"name\": \"Physics\",\"description\": \"Desc\"}")
+                      )
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", is("Physics") ))
                 .andExpect(jsonPath("$.description", is("Desc") ))
