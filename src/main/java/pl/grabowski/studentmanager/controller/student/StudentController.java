@@ -119,7 +119,7 @@ public class StudentController {
         }
     }
 
-    @PatchMapping(path= "/{id}")
+    @PutMapping(path= "/{id}")
     @PreAuthorize("hasAuthority('student:write')")
     public ResponseEntity<Student> updateStudent(@PathVariable(required = true) Long id, @RequestBody StudentUpdateRequest studentUpdateRequest){
        if(studentService.getStudentById(id).isPresent()){
