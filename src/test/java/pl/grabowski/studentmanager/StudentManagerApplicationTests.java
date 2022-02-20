@@ -44,7 +44,7 @@ class StudentIntegrationTest {
 
     private final List<Student> testStudents = new ArrayList<>();
 
-    private String token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJjb3Vyc2U6cmVhZCIsImNvdXJzZTp3cml0ZSIsInN0dWRlbnQ6cmVhZCIsInN0dWRlbnQ6d3JpdGUiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjQ1MjY0NDU2fQ.S4V1vU3u8MN9wlYBa7w_ZSh7oUFxeXVF8PMoKBSU0l8";
+    private String token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJjb3Vyc2U6cmVhZCIsImNvdXJzZTp3cml0ZSIsInN0dWRlbnQ6cmVhZCIsInN0dWRlbnQ6d3JpdGUiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjQ1OTUzMTA1fQ.0uXEyxdhA49E6g7UGj3LzoNpgZJhIqmHzDqyedH5IDo";
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -70,7 +70,7 @@ class StudentIntegrationTest {
     }
 
     @Test
-    void ShouldReturnAccessTokenWhenLogin() {
+    void Should_return_access_token_when_login() {
         String accessToken = "";
         var result = restTemplate.postForEntity("http://localhost:" + port + "/login?username=admin&password=adminPass", accessToken, String.class);
         assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
@@ -81,7 +81,7 @@ class StudentIntegrationTest {
     }
 
     @Test
-    void ShouldReturnAllStudent() throws IOException {
+    void Should_return_all_student() throws IOException {
         //given
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", token);
@@ -105,7 +105,7 @@ class StudentIntegrationTest {
     }
 
     @Test
-    void ShouldReturnResponseAsJson() throws IOException {
+    void Should_return_response_as_json() throws IOException {
         //given
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", token);
@@ -120,7 +120,7 @@ class StudentIntegrationTest {
     }
 
     @Test
-    void ShouldAbleToAddNewStudent() throws JSONException {
+    void Should_able_to_add_new_student() throws JSONException {
         //given
         HttpHeaders header = new HttpHeaders();
         header.set("Authorization", token);
@@ -149,7 +149,7 @@ class StudentIntegrationTest {
     }
 
     @Test
-    void ShouldAbleToFindStudentById() {
+    void Should_able_to_find_student_by_id() {
         //given
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", token);
@@ -170,7 +170,21 @@ class StudentIntegrationTest {
     }
 
     @Test
-    void ShouldAbleToRemoveStudent(){
+    void Should_return_bad_request_when_id_less_than_1() {
+        //given
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", token);
+        HttpEntity requestHeaders = new HttpEntity(headers);
+        initData();
+        // then
+        assertThatThrownBy(()-> {
+            var result = restTemplate.exchange("http://localhost:"+port+"/students/-1", HttpMethod.GET, requestHeaders, String.class);
+        }).isInstanceOf(HttpClientErrorException.class)
+                .hasMessageContaining("400");
+    }
+
+    @Test
+    void Should_able_to_remove_student(){
         //given
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", token);
@@ -185,7 +199,7 @@ class StudentIntegrationTest {
     }
 
     @Test
-    void ShouldAbleToUpdateStudent() throws JSONException {
+    void Should_able_to_update_student() throws JSONException {
         //given
 
         HttpHeaders header = new HttpHeaders();
@@ -211,25 +225,21 @@ class StudentIntegrationTest {
     }
 
     @Test
-    void ShouldReturnInformationFieldsAreEmpty() throws JSONException {
+    void Should_return_information_fields_are_empty() throws JSONException {
         //given
         HttpHeaders header = new HttpHeaders();
         header.set("Authorization", token);
         header.setContentType(MediaType.APPLICATION_JSON);
-
         JSONObject body = new JSONObject();
         body.put("firstName", "");
         body.put("lastName", "");
         body.put("indexNumber", "");
         body.put("birthDay", "");
-
         HttpEntity<?> requestHeaders = new HttpEntity<>(body.toString(), header);
-
         var result = restTemplate.exchange("http://localhost:"+port+"/students", HttpMethod.POST,requestHeaders,
                 String.class);
 
         //then
-        //String jsonBody = result.getBody();
         assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(result.hasBody()).isTrue();
         String jsonBody = result.getBody();
@@ -240,7 +250,7 @@ class StudentIntegrationTest {
     }
 
     @Test
-    void ShouldThrowExceptionWhenTokenIsInValid() {
+    void Should_throw_exception_when_token_is_inValid() {
         //given
         HttpHeaders header = new HttpHeaders();
         header.set("Authorization","ere");
