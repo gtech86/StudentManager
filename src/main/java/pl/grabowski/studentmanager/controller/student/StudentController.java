@@ -3,7 +3,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
@@ -55,7 +54,7 @@ public class StudentController {
     @GetMapping(path="/{id}")
     @PreAuthorize("hasAuthority('student:read')")
     public ResponseEntity<StudentResponse> getStudentById(@PathVariable(required = true) Long id){
-
+        if(id<1) return ResponseEntity.badRequest().build();
         var student = studentService.getStudentById(id);
                 if(student.isPresent()){
                     StudentResponse studentResponse = new StudentResponse(
