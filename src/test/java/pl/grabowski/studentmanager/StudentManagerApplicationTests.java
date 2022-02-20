@@ -1,9 +1,9 @@
 package pl.grabowski.studentmanager;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -42,7 +42,6 @@ class StudentIntegrationTest {
     private final List<Student> testStudents = new ArrayList<>();
 
     private String token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJjb3Vyc2U6cmVhZCIsImNvdXJzZTp3cml0ZSIsInN0dWRlbnQ6cmVhZCIsInN0dWRlbnQ6d3JpdGUiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjQ1OTUzMTA1fQ.0uXEyxdhA49E6g7UGj3LzoNpgZJhIqmHzDqyedH5IDo";
-    private ObjectMapper objectMapper;
 
     @Autowired
     MockMvc mvc;
@@ -61,10 +60,10 @@ class StudentIntegrationTest {
         testStudents.add(new Student(2L, "Paweł","Grabowski","pawel@grabowski.pl", 1234, Date.valueOf(LocalDate.now())));
         studentRepository.saveAll(testStudents);
     }
-
-    private void generateToken(){
-
-    }
+    /*@Before
+    public void generateToken(){
+     restTemplate.postForEntity("http://localhost:" + port + "/login?username=admin&password=adminPass", this.token, String.class);
+    }*/
 
     @Test
     void contextLoads() {
@@ -247,7 +246,6 @@ class StudentIntegrationTest {
         // then
         assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(result.hasBody()).isTrue();
-        String jsonBody = result.getBody();
         var json = JsonPath.parse(result);
         assertThat(json.read("$.firstName", String.class)).isEqualTo("Paweł");
         assertThat(json.read("$.lastName", String.class)).isEqualTo("Grabowski");
@@ -266,20 +264,22 @@ class StudentIntegrationTest {
         JSONObject body = new JSONObject();
         body.put("firstName", "");
         body.put("lastName", "");
-        body.put("indexNumber", "");
-        body.put("birthDay", "");
+        body.put("indexNumber", null);
+        body.put("mail", "qwerty.pl");
+        body.put("birthDay", null);
         HttpEntity<?> requestHeaders = new HttpEntity<>(body.toString(), header);
         var result = restTemplate.exchange("http://localhost:"+port+"/students", HttpMethod.POST,requestHeaders,
                 String.class);
 
         //then
-        assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(result.getStatusCodeValue()).isEqualTo(400);
         assertThat(result.hasBody()).isTrue();
         String jsonBody = result.getBody();
         var json = JsonPath.parse(jsonBody);
-        assertThat(json.read("$.firstName", String.class)).isEqualTo("James");
-        assertThat(json.read("$.lastName", String.class)).isEqualTo("Bond");
-        assertThat(json.read("$.indexNumber", Integer.class)).isEqualTo(1234);
+        assertThat(json.read("$.firstName", String.class)).isEqualTo("wielkość musi należeć do zakresu od 2 do 15");
+        assertThat(json.read("$.lastName", String.class)).isEqualTo("wielkość musi należeć do zakresu od 2 do 30");
+        assertThat(json.read("$.indexNumber", String.class)).isEqualTo("nie może mieć wartości null");
+        assertThat(json.read("$.mail", String.class)).isEqualTo("musi być poprawnie sformatowanym adresem e-mail");
     }
 
     @Test
