@@ -41,7 +41,7 @@ class StudentIntegrationTest {
 
     private final List<Student> testStudents = new ArrayList<>();
 
-    private String token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJjb3Vyc2U6cmVhZCIsImNvdXJzZTp3cml0ZSIsInN0dWRlbnQ6cmVhZCIsInN0dWRlbnQ6d3JpdGUiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjQ1OTUzMTA1fQ.0uXEyxdhA49E6g7UGj3LzoNpgZJhIqmHzDqyedH5IDo";
+    private String token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJjb3Vyc2U6cmVhZCIsImNvdXJzZTp3cml0ZSIsInN0dWRlbnQ6cmVhZCIsInN0dWRlbnQ6d3JpdGUiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo2MjA1OC9sb2dpbiIsImV4cCI6MTY0NjA4NDgxNX0.90GEjqpLVEOfu9DSlVY5YgBeZWT_tR_ZOl6nWKgajWw";
 
     @Autowired
     MockMvc mvc;
@@ -236,21 +236,20 @@ class StudentIntegrationTest {
         HttpHeaders header = new HttpHeaders();
         header.set("Authorization", token);
         JSONObject body = new JSONObject();
-        body.put("firstName", "Poprawiony");
-        body.put("lastName", "LastCorrect");
+        body.put("firstName", "CorrectedFirstName");
+        body.put("lastName", "CorrectedLastName");
 
-        HttpEntity<?> requestHeaders = new HttpEntity<>(header);
+        HttpEntity<?> requestHeaders = new HttpEntity<>(body.toString(), header);
         // when
-        var result = restTemplate.exchange("http://localhost:"+port+"/students", HttpMethod.PATCH, requestHeaders, String.class);
+        var result = restTemplate.exchange("http://localhost:"+port+"/students/2", HttpMethod.PATCH, requestHeaders, String.class);
 
         // then
         assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(result.hasBody()).isTrue();
         var json = JsonPath.parse(result);
-        assertThat(json.read("$.firstName", String.class)).isEqualTo("Paweł");
-        assertThat(json.read("$.lastName", String.class)).isEqualTo("Grabowski");
+        assertThat(json.read("$.firstName", String.class)).isEqualTo("CorrectedFirstName");
+        assertThat(json.read("$.lastName", String.class)).isEqualTo("CorrectedLastName");
         assertThat(json.read("$.indexNumber", Integer.class)).isEqualTo(1234);
-        assertThat(json.read("$.birthDay", Integer.class)).isEqualTo(1234);
     }
 ////////////////////////////////////////////////////
 
