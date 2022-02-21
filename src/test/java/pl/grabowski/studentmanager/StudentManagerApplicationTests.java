@@ -232,14 +232,15 @@ class StudentIntegrationTest {
     @Test
     void Should_able_to_update_student() throws JSONException {
         //given
-
         HttpHeaders header = new HttpHeaders();
         header.set("Authorization", token);
+        header.setContentType(MediaType.APPLICATION_JSON);
         JSONObject body = new JSONObject();
         body.put("firstName", "CorrectedFirstName");
         body.put("lastName", "CorrectedLastName");
 
         HttpEntity<?> requestHeaders = new HttpEntity<>(body.toString(), header);
+        initStudentData();
         // when
         var result = restTemplate.exchange("http://localhost:"+port+"/students/2", HttpMethod.PATCH, requestHeaders, String.class);
 
