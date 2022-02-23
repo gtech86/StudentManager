@@ -3,15 +3,20 @@ package pl.grabowski.studentmanager;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pl.grabowski.studentmanager.model.student.Student;
@@ -32,7 +37,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
-@WithMockUser(value = "admin", authorities = "student:read")
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration
+@WithMockUser(username="admin",roles={"ADMIN"})
 class StudentIntegrationTest {
 
     @LocalServerPort
@@ -103,31 +110,16 @@ class StudentIntegrationTest {
     }
 
     @Test
-    void ShouldAbleToFindStudentById() throws Exception {
-        ///USUNAC//////
-        var login = mvc
-                .perform(post("/login?username=admin&password=adminPass"))
-                .andExpect(status().is2xxSuccessful())
-                .andReturn();
-        var token = login.getResponse().getHeader("Authorization");
-        ////USUNAC/////
+    void ShouldAbleToFindStudentById() {
         //given
         initData();
         // when
-        var result = mvc
-                .perform(get("http://localhost:"+port+"/students/2")
-                        .header("Authorization", token))
-                .andDo(print())
-                .andExpect(status().is2xxSuccessful())
-                .andReturn();
-                //restTemplate.getForEntity("http://localhost:"+port+"/students/2", Student.class);
+        var result = restTemplate.getForEntity("http://localhost:"+port+"/students/2", Student.class);
 
         // then
-        //assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
-        //assertThat(result.hasBody()).isTrue();
-        //(result.getBody()).isEqualTo(
-         //       new Student(2L, "Paweł","Grabowski","pawel@grabiski.pl", 1234, Date.valueOf(LocalDate.now()))
-        //);
+        assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(result.hasBody()).isTrue();
+
     }
 
     @Test
@@ -139,7 +131,7 @@ class StudentIntegrationTest {
         var result = restTemplate.getForEntity("http://localhost:"+port+"/students/2", Student.class);
 
         // then
-        assertThat(result.getStatusCode().is4xxClientError()).isTrue();
+        assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
     }
 
     @Test
