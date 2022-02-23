@@ -4,13 +4,13 @@ import java.util.Date;
 import java.util.Optional;
 
 public class StudentUpdateRequest {
-    public final Optional<String> firstName;
-    public final Optional<String> lastName;
-    public final Optional<String> mail;
-    public Optional<Integer> indexNumber;
-    public Optional<Date> birthDay;
+    public final String firstName;
+    public final String lastName;
+    public final String mail;
+    public Integer indexNumber;
+    public Date birthDay;
 
-    public StudentUpdateRequest(Optional<String> firstName, Optional<String> lastName, Optional<String> mail, Optional<Integer> indexNumber, Optional<Date> birthDay) {
+    public StudentUpdateRequest(String firstName, String lastName, String mail, Integer indexNumber, Date birthDay) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.mail = mail;
@@ -18,31 +18,23 @@ public class StudentUpdateRequest {
         this.birthDay = birthDay;
     }
 
-    public Optional<String> getFirstName() {
+    public String getFirstName() {
         return firstName;
     }
 
-    public Optional<String> getLastName() {
+    public String getLastName() {
         return lastName;
     }
 
-    public Optional<String> getMail() {
+    public String getMail() {
         return mail;
     }
 
-    public Optional<Integer> getIndexNumber() {
+    public Integer getIndexNumber() {
         return indexNumber;
     }
 
-    public void setIndexNumber(Optional<Integer> indexNumber) {
-        this.indexNumber = indexNumber;
-    }
-
-    public Optional<Date> getBirthDay() {
+    public Date getBirthDay() {
         return birthDay;
-    }
-
-    public void setBirthDay(Optional<Date> birthDay) {
-        this.birthDay = birthDay;
     }
 }

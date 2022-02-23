@@ -18,7 +18,7 @@ public class Student {
     private Integer indexNumber;
     private Date birthDay;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "course_student",
             joinColumns = @JoinColumn(name = "student_id"),

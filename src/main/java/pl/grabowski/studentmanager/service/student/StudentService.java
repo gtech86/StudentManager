@@ -41,7 +41,8 @@ public class StudentService {
     public Optional<Student> updateStudent(Long id, Student student){
         var studentToUpdate = getStudentById(id);
         if(studentToUpdate.isEmpty()) return Optional.empty();
-        return Optional.of(studentRepository.save(student));
+        studentRepository.save(student);
+        return Optional.of(student);
 
     }
 

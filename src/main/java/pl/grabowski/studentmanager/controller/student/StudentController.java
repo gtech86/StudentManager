@@ -1,5 +1,6 @@
 package pl.grabowski.studentmanager.controller.student;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.grabowski.studentmanager.model.student.Student;
 import pl.grabowski.studentmanager.service.course.CourseService;
 import pl.grabowski.studentmanager.service.student.StudentService;
+import pl.grabowski.studentmanager.utils.StudentMapper;
+
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +28,9 @@ public class StudentController {
     private final Validator validator;
     private final ModelMapper modelMapper = new ModelMapper();
     private final CourseService courseService;
+
+    @Autowired
+    StudentMapper mapper;
 
     public StudentController(StudentService studentService, Validator validator, CourseService courseService) {
         this.studentService = studentService;
@@ -122,10 +128,12 @@ public class StudentController {
     @PatchMapping(path= "/{id}")
     @PreAuthorize("hasAuthority('student:write')")
     public ResponseEntity<Student> updateStudent(@PathVariable(required = true) Long id, @RequestBody StudentUpdateRequest studentUpdateRequest){
+       //modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
        if(studentService.getStudentById(id).isPresent()){
-            var studentToUpdate = modelMapper.map(studentUpdateRequest, Student.class);
-            var student = studentService.updateStudent(id, studentToUpdate);
-            return new ResponseEntity<>(student.get(), HttpStatus.OK);
+            var studentToUpdate = studentService.getStudentById(id);
+            mapper.updateStudentFromDto(studentUpdateRequest, studentToUpdate.get());
+            var updatedStudent = studentService.updateStudent(id, studentToUpdate.get());
+            return new ResponseEntity<>(updatedStudent.get(), HttpStatus.OK);
         }
         return ResponseEntity.notFound().build();
     }
