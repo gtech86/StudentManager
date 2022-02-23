@@ -264,7 +264,7 @@ class StudentIntegrationTest {
         JSONObject body = new JSONObject();
         body.put("firstName", "");
         body.put("lastName", "");
-        body.put("indexNumber", null);\\
+        body.put("indexNumber", null);
         body.put("mail", "qwerty.pl");
         body.put("birthDay", null);
         HttpEntity<?> requestHeaders = new HttpEntity<>(body.toString(), header);
