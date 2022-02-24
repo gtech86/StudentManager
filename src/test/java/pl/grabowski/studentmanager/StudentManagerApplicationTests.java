@@ -13,6 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -59,10 +60,9 @@ class StudentIntegrationTest {
         testStudents.add(new Student(2L, "Paweł","Grabowski","pawel@grabowski.pl", 1234, Date.valueOf(LocalDate.now())));
         studentRepository.saveAll(testStudents);
     }
-    /*@Before
-    public void generateToken(){
-     restTemplate.postForEntity("http://localhost:" + port + "/login?username=admin&password=adminPass", this.token, String.class);
-    }*/
+
+
+
 
     @Test
     void contextLoads() {
@@ -74,8 +74,7 @@ class StudentIntegrationTest {
         var result = restTemplate.postForEntity("http://localhost:" + port + "/login?username=admin&password=adminPass", accessToken, String.class);
         assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(result.hasBody()).isTrue();
-        String jsonBody = result.getBody();
-        var json = JsonPath.parse(jsonBody);
+        var json = JsonPath.parse(result.getBody());
         assertThat(json.read("$.access_token", String.class)).isNotEmpty();
     }
 
@@ -90,10 +89,9 @@ class StudentIntegrationTest {
         var result = restTemplate.exchange("http://localhost:"+port+"/students", HttpMethod.GET, requestHeaders, String.class);
 
         // then
-        String jsonBody = result.getBody();
         assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(result.hasBody()).isTrue();
-        var json = JsonPath.parse(jsonBody);
+        var json = JsonPath.parse(result.getBody());
         assertThat(json.read("$[0].firstName", String.class)).isEqualTo("John");
         assertThat(json.read("$[0].lastName", String.class)).isEqualTo("Bond");
         assertThat(json.read("$[0].indexNumber", Integer.class)).isEqualTo(4567);
@@ -129,7 +127,7 @@ class StudentIntegrationTest {
         body.put("firstName", "James");
         body.put("lastName", "Bond");
         body.put("indexNumber", 1234);
-        body.put("birthDay", Date.valueOf(LocalDate.now()).toString());
+        body.put("birthDay", "1986-05-31T00:00:00.000+00:00");
 
         HttpEntity<?> requestHeaders = new HttpEntity<>(body.toString(), header);
 
@@ -139,11 +137,11 @@ class StudentIntegrationTest {
         //then
         assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(result.hasBody()).isTrue();
-        String jsonBody = result.getBody();
-        var json = JsonPath.parse(jsonBody);
+        var json = JsonPath.parse(result.getBody());
         assertThat(json.read("$.firstName", String.class)).isEqualTo("James");
         assertThat(json.read("$.lastName", String.class)).isEqualTo("Bond");
         assertThat(json.read("$.indexNumber", Integer.class)).isEqualTo(1234);
+        assertThat(json.read("$.birthDay", String.class)).isEqualTo("1986-05-31T00:00:00.000+00:00");
     }
 
     @Test
@@ -159,8 +157,7 @@ class StudentIntegrationTest {
         // then
         assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(result.hasBody()).isTrue();
-        String jsonBody = result.getBody();
-        var json = JsonPath.parse(jsonBody);
+        var json = JsonPath.parse(result.getBody());
         assertThat(json.read("$.firstName", String.class)).isEqualTo("Paweł");
         assertThat(json.read("$.lastName", String.class)).isEqualTo("Grabowski");
         assertThat(json.read("$.indexNumber", Integer.class)).isEqualTo(1234);
@@ -227,31 +224,31 @@ class StudentIntegrationTest {
         assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(result.getBody()).isEqualTo("Student deleted");
     }
-////////////////NIE DZIALA Request method 'PATCH' not supported/////////////
+
     @Test
     void Should_able_to_update_student() throws JSONException {
         //given
-
+        restTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
         HttpHeaders header = new HttpHeaders();
         header.set("Authorization", token);
+        header.setContentType(MediaType.APPLICATION_JSON);
         JSONObject body = new JSONObject();
         body.put("firstName", "CorrectFirstName");
         body.put("lastName", "CorrectLastName");
         initStudentData();
-        HttpEntity<?> requestHeaders = new HttpEntity<>(header);
+        HttpEntity<?> requestHeaders = new HttpEntity<>(body.toString(), header);
         // when
         var result = restTemplate.exchange("http://localhost:"+port+"/students/2", HttpMethod.PATCH, requestHeaders, String.class);
 
         // then
         assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(result.hasBody()).isTrue();
-        var json = JsonPath.parse(result);
+        var json = JsonPath.parse(result.getBody());
         assertThat(json.read("$.firstName", String.class)).isEqualTo("CorrectFirstName");
         assertThat(json.read("$.lastName", String.class)).isEqualTo("CorrectLastName");
         assertThat(json.read("$.mail", String.class)).isEqualTo("pawel@grabowski.pl");
         assertThat(json.read("$.indexNumber", Integer.class)).isEqualTo(1234);
     }
-/////estStudents.add(new Student(2L, "Paweł","Grabowski","pawel@grabowski.pl", 1234, Date.valueOf(LocalDate.now())));
 
     @Test
     void Should_return_information_fields_are_empty() throws JSONException {
@@ -272,8 +269,7 @@ class StudentIntegrationTest {
         //then
         assertThat(result.getStatusCodeValue()).isEqualTo(400);
         assertThat(result.hasBody()).isTrue();
-        String jsonBody = result.getBody();
-        var json = JsonPath.parse(jsonBody);
+        var json = JsonPath.parse(result.getBody());
         assertThat(json.read("$.firstName", String.class)).isEqualTo("wielkość musi należeć do zakresu od 2 do 15");
         assertThat(json.read("$.lastName", String.class)).isEqualTo("wielkość musi należeć do zakresu od 2 do 30");
         assertThat(json.read("$.indexNumber", String.class)).isEqualTo("nie może mieć wartości null");
