@@ -41,7 +41,7 @@ class StudentIntegrationTest {
 
     private final List<Student> testStudents = new ArrayList<>();
 
-    private String token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJjb3Vyc2U6cmVhZCIsImNvdXJzZTp3cml0ZSIsInN0dWRlbnQ6cmVhZCIsInN0dWRlbnQ6d3JpdGUiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjQ1OTUzMTA1fQ.0uXEyxdhA49E6g7UGj3LzoNpgZJhIqmHzDqyedH5IDo";
+    private String token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJjb3Vyc2U6cmVhZCIsImNvdXJzZTp3cml0ZSIsInN0dWRlbnQ6cmVhZCIsInN0dWRlbnQ6d3JpdGUiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjQ1ODI4MDk2fQ.NfhzMGxuxISF-zNPerwM8LHmz4Xwje3564YMVNxbBcs";
 
     @Autowired
     MockMvc mvc;
@@ -236,24 +236,23 @@ class StudentIntegrationTest {
         HttpHeaders header = new HttpHeaders();
         header.set("Authorization", token);
         JSONObject body = new JSONObject();
-        body.put("firstName", "Poprawiony");
-        body.put("lastName", "LastCorrect");
-
+        body.put("firstName", "CorrectFirstName");
+        body.put("lastName", "CorrectLastName");
+        initStudentData();
         HttpEntity<?> requestHeaders = new HttpEntity<>(header);
         // when
-        var result = restTemplate.exchange("http://localhost:"+port+"/students", HttpMethod.PATCH, requestHeaders, String.class);
+        var result = restTemplate.exchange("http://localhost:"+port+"/students/2", HttpMethod.PATCH, requestHeaders, String.class);
 
         // then
         assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(result.hasBody()).isTrue();
         var json = JsonPath.parse(result);
-        assertThat(json.read("$.firstName", String.class)).isEqualTo("Paweł");
-        assertThat(json.read("$.lastName", String.class)).isEqualTo("Grabowski");
+        assertThat(json.read("$.firstName", String.class)).isEqualTo("CorrectFirstName");
+        assertThat(json.read("$.lastName", String.class)).isEqualTo("CorrectLastName");
+        assertThat(json.read("$.mail", String.class)).isEqualTo("pawel@grabowski.pl");
         assertThat(json.read("$.indexNumber", Integer.class)).isEqualTo(1234);
-        assertThat(json.read("$.birthDay", Integer.class)).isEqualTo(1234);
     }
-////////////////////////////////////////////////////
-
+/////estStudents.add(new Student(2L, "Paweł","Grabowski","pawel@grabowski.pl", 1234, Date.valueOf(LocalDate.now())));
 
     @Test
     void Should_return_information_fields_are_empty() throws JSONException {
