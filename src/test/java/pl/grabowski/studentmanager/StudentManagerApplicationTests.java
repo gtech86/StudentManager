@@ -3,7 +3,6 @@ package pl.grabowski.studentmanager;
 import com.jayway.jsonpath.JsonPath;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
