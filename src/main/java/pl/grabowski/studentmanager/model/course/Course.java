@@ -16,7 +16,7 @@ public class Course {
     private String name;
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courses")
+    @ManyToMany( mappedBy = "courses")
     private Set<Student> students;
 
     public Course() {

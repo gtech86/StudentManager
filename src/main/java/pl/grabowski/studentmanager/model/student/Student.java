@@ -18,11 +18,11 @@ public class Student {
     private Integer indexNumber;
     private Date birthDay;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
+    @ManyToMany
+    /*@JoinTable(
             name = "course_student",
             joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id"))
+            inverseJoinColumns = @JoinColumn(name = "course_id"))*/
     private Set<Course> courses;
 
     public Student() {

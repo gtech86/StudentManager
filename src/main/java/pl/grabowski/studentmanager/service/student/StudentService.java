@@ -7,8 +7,6 @@ import pl.grabowski.studentmanager.model.course.Course;
 import pl.grabowski.studentmanager.model.student.Student;
 import pl.grabowski.studentmanager.repository.student.StudentRepository;
 import pl.grabowski.studentmanager.service.course.CourseService;
-
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
