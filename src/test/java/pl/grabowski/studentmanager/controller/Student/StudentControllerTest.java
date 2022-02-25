@@ -114,8 +114,7 @@ class StudentControllerTest {
                         .content("{\"firstName\": \"Marek\"}")
                 )
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.firstName", is("Paweł") ))
-                .andExpect(jsonPath("$.lastName", is("Grabowski") )).andReturn();
+                .andExpect(jsonPath("$.firstName", is("Marek") )).andReturn();
 
     }
 }
