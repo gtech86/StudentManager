@@ -1,4 +1,4 @@
-package pl.grabowski.studentmanager.controller;
+package pl.grabowski.studentmanager.controller.Student;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
