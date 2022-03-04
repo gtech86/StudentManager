@@ -3,6 +3,7 @@ package pl.grabowski.studentmanager.service.student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.grabowski.studentmanager.model.course.Course;
 import pl.grabowski.studentmanager.model.student.Student;
 import pl.grabowski.studentmanager.repository.student.StudentRepository;
@@ -25,17 +26,24 @@ public class StudentService {
         this.courseService = courseService;
     }
 
-
-    public void addNewStudent(Student student){
-        studentRepository.save(student);
-    }
-
     public List<Student> getAllStudents() {
         return StreamSupport
                 .stream(studentRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
     }
 
+    public Optional<Student> getStudentById(Long id) {
+        return studentRepository.findById(id);
+    }
+
+    @Transactional
+    public void addNewStudent(Student student){
+
+        studentRepository.save(student);
+    }
+
+
+    @Transactional
     public Optional<Student> updateStudent(Long id, Student student){
         var studentToUpdate = getStudentById(id);
         if(studentToUpdate.isEmpty()) return Optional.empty();
@@ -44,14 +52,11 @@ public class StudentService {
 
     }
 
-    public Optional<Student> getStudentById(Long id) {
-        return studentRepository.findById(id);
-    }
-
     public void deleteStudentById(Long id) {
         studentRepository.deleteById(id);
     }
 
+    @Transactional
     public Optional<Student> assignCourse(Long studentId, Long courseId){
         var course = courseService.getCourseById(courseId);
         var student = getStudentById(studentId);

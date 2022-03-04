@@ -7,11 +7,12 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Table(name = "course")
 public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "courses_id")
+    @Column(name = "course_id")
     private Long id;
     private String name;
     private String description;

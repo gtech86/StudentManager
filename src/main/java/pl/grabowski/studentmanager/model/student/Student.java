@@ -1,5 +1,6 @@
 package pl.grabowski.studentmanager.model.student;
 
+import org.apache.maven.repository.internal.SnapshotMetadataGeneratorFactory;
 import pl.grabowski.studentmanager.model.course.Course;
 
 import javax.persistence.*;
@@ -19,10 +20,10 @@ public class Student {
     private Date birthDay;
 
     @ManyToMany
-    /*@JoinTable(
-            name = "course_student",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id"))*/
+    @JoinTable(name = "student_course",
+            joinColumns = {@JoinColumn(name = "student_id")},
+            inverseJoinColumns = {@JoinColumn(name = "course_id")}
+    )
     private Set<Course> courses;
 
     public Student() {
