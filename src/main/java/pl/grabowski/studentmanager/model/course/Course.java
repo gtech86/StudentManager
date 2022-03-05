@@ -14,7 +14,9 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
     private Long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "description")
     private String description;
 
     @ManyToMany( mappedBy = "courses")

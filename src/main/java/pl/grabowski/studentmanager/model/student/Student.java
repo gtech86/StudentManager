@@ -13,10 +13,16 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "student_id")
     private Long id;
+
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
+    @Column(name = "mail")
     private String mail;
+    @Column(name = "index_number")
     private Integer indexNumber;
+    @Column(name = "birth_day")
     private Date birthDay;
 
     @ManyToMany
