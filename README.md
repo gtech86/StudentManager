@@ -1,0 +1,3 @@
+# StudentManager
+
+Spring CRUD operations
